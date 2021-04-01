@@ -13,7 +13,17 @@ const controls = [
 const buildControls = (props) =>{
     return (
         <div className={styles.BuildControls}> 
-            {controls.map ((label) => <BuildControl key= {label.label} label = {label.label}></BuildControl>)}
+            <p>Current Price: ₹<strong>{props.price}</strong></p>
+            {controls.map ((label) => <BuildControl 
+                key= {label.label} 
+                label = {label.label} 
+                addIng={()=> props.addIng(label.type)} 
+                remIng= {()=> props.remIng(label.type)}
+                isDisabled = {props.isDisabled[label.type]}
+            />
+            )}
+            <button className={styles.OrderButton  } disabled= {!props.isPurchaseable}>ORDER NOW</button>
+
         </div>
     )
 

@@ -6,7 +6,7 @@ const burger = (props) => {
 
     let ingredients = Object.keys(props.type).map((index)=>{
             return  [...Array(props.type[index])].map((__, id)=>{
-                return <BurgerIngredient id= {index + id } type = {index} /> 
+                return <BurgerIngredient key= {index + id  } type = {index} /> 
             })
         }).reduce((prev, curr)=>{
             return prev.concat(curr)
