@@ -3,6 +3,7 @@ import Burger from '../../components/Burger/Burger'
 import BuildControls from '../../components/Burger/BuildControls/BuildControls'
 import Modal from '../../components/UI/Modal/Modal'
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary'
+import Backdrop from '../../components/UI/Backdrop/Backdrop'
 
 const INGREDIENT_PRICES = {
     salad: 50,
@@ -21,9 +22,11 @@ class BurgerBuilder extends Component {
             'meat':0
         },
         totalPrice: 50,
-        purchaseable: false 
+        purchaseable: false ,
+        purchasing: false 
     }
 
+    
     
     isPurchaseable (ingredients) {
         
@@ -35,7 +38,7 @@ class BurgerBuilder extends Component {
                 sum += prev
                 return sum 
 
-            }, 0)
+            }, 0);
         this.setState({purchaseable: sum>0})
     }
 
@@ -75,6 +78,10 @@ class BurgerBuilder extends Component {
         this.isPurchaseable(updatedIng)
     }
 
+    purchaseHandler =() =>   this.setState({purchasing: true})
+    backDropClickHandler = () => this.setState ({purchasing: false})
+    continueOrderHandler = () => alert('hello')
+    
     render() {
 
     const isDisabled = {
@@ -85,7 +92,16 @@ class BurgerBuilder extends Component {
     }
         return(
             <>
-                <Modal><OrderSummary ingredients= {this.state.ingredients}></OrderSummary></Modal>
+                <Backdrop 
+                show = {this.state.purchasing}
+                click = {this.backDropClickHandler}
+                />
+                <Modal show= {this.state.purchasing}><OrderSummary 
+                    ingredients= {this.state.ingredients} 
+                    continue = {this.continueOrderHandler}
+                    cancel = {this.backDropClickHandler}
+                    totalPrice= {this.state.totalPrice}>
+                </OrderSummary></Modal>
                 <Burger type = {this.state.ingredients}/>
                 <BuildControls 
                     price= {this.state.totalPrice}
@@ -93,6 +109,7 @@ class BurgerBuilder extends Component {
                     remIng = {this.remIngHandler}
                     isDisabled = {isDisabled}
                     isPurchaseable= {this.state.purchaseable}
+                    ordered = {this.purchaseHandler}
                 />
             </>
         )
