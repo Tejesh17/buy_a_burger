@@ -1,9 +1,14 @@
 import React, { Component } from "react"
+
 import Burger from '../../components/Burger/Burger'
 import BuildControls from '../../components/Burger/BuildControls/BuildControls'
 import Modal from '../../components/UI/Modal/Modal'
-import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary'
 import Backdrop from '../../components/UI/Backdrop/Backdrop'
+import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary'
+import Spinner from '../../components/UI/Spinner/Spinner'
+import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler'
+
+import axios from '../../axios-orders'
 
 const INGREDIENT_PRICES = {
     salad: 50,
@@ -23,7 +28,8 @@ class BurgerBuilder extends Component {
         },
         totalPrice: 50,
         purchaseable: false ,
-        purchasing: false 
+        purchasing: false,
+        showSpinner: false,
     }
 
     
@@ -80,7 +86,33 @@ class BurgerBuilder extends Component {
 
     purchaseHandler =() =>   this.setState({purchasing: true})
     backDropClickHandler = () => this.setState ({purchasing: false})
-    continueOrderHandler = () => alert('hello')
+
+    continueOrderHandler = () => {
+        this.setState({showSpinner:true})
+        const order = {
+            ingredients : this.state.ingredients,
+            price: this.state.totalPrice,
+            customer: {
+                name: 'Tejesh',
+                address: {
+                    street: 'poopoopeepee',
+                    city: 'bangalore',
+                    zip: 5600
+                },
+                email: 'hello@hello.com'
+            },
+            delivery: 'fastest'
+        }
+        axios.post('/orders.jso', order)
+        .then(res => {
+            console.log(res);
+        this.setState({showSpinner:false, purchasing:false})
+        })
+        .catch(e => {
+            console.log(e);
+            this.setState({showSpinner:false, purchasing:false})
+        })
+    } 
     
     render() {
 
@@ -90,18 +122,26 @@ class BurgerBuilder extends Component {
     for (let key in isDisabled){
         isDisabled[key] = isDisabled[key] <= 0
     }
+    
+    let orderSum =''
+
+    if(this.state.showSpinner){
+        orderSum = <Spinner></Spinner> 
+    } else {
+        orderSum = 
+                    <OrderSummary 
+                        ingredients= {this.state.ingredients} 
+                        continue = {this.continueOrderHandler}
+                        cancel = {this.backDropClickHandler}
+                        totalPrice= {this.state.totalPrice}>
+                    </OrderSummary>
+    }
         return(
             <>
-                <Backdrop 
-                show = {this.state.purchasing}
-                click = {this.backDropClickHandler}
-                />
-                <Modal show= {this.state.purchasing}><OrderSummary 
-                    ingredients= {this.state.ingredients} 
-                    continue = {this.continueOrderHandler}
-                    cancel = {this.backDropClickHandler}
-                    totalPrice= {this.state.totalPrice}>
-                </OrderSummary></Modal>
+                <Backdrop show = {this.state.purchasing} Click = {this.backDropClickHandler}> </Backdrop>
+                <Modal show= {this.state.purchasing} >
+                    {orderSum}
+                </Modal>
                 <Burger type = {this.state.ingredients}/>
                 <BuildControls 
                     price= {this.state.totalPrice}
@@ -116,4 +156,4 @@ class BurgerBuilder extends Component {
     }
 }
 
-export default BurgerBuilder
+export default withErrorHandler(BurgerBuilder, axios)
