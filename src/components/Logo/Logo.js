@@ -4,7 +4,7 @@ import styles from './Logo.module.css'
 
 const logo = (props) =>{
     return(
-        <div className={styles.Logo}>
+        <div className={styles.Logo} style= {{height: props.height}}>
             <img src={BurgerLogo} alt="Burger Logo"></img>
         </div>
     )
