@@ -23,10 +23,14 @@ const withErrorHandler = (WrappedComponent, axios) =>{
         errorHandler  = () =>{
             this.setState({error:null})
         }
+
+        errorConfirmedHandler = () => {
+            this.setState({error:null})
+        }
             render () {
                 return (
                     <>
-                        <Backdrop show = {this.state.error} Click = {this.backDropClickHandler}> </Backdrop>
+                        <Backdrop show = {this.state.error} Click = {this.errorConfirmedHandler}> </Backdrop>
                         <Modal show= {this.state.error} >
                             {this.state.error ? this.state.error.message: null}
                         </Modal>

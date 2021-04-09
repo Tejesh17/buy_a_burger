@@ -103,7 +103,7 @@ class BurgerBuilder extends Component {
             },
             delivery: 'fastest'
         }
-        axios.post('/orders.jso', order)
+        axios.post('/orders.json', order)
         .then(res => {
             console.log(res);
         this.setState({showSpinner:false, purchasing:false})

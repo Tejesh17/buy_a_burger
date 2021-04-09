@@ -20,7 +20,7 @@ class layout extends Component{
     render(){
         return(
             <>
-            <SideDrawer open={this.state.showSideDrawer} clicked = {this.sideDrawerClosedHandler}></SideDrawer>
+            <SideDrawer open={this.state.showSideDrawer} click = {this.sideDrawerClosedHandler}></SideDrawer>
 
             <Toolbar openDraw = {this.sideDrawerOpenHandler}></Toolbar>
             <main className={styles.content}>
